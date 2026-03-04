@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carta — Dia das Mulheres</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg"></div>
+  <div id="fx" aria-hidden="true"></div>
+
+  <main class="container">
+    <header class="header">
+      <div class="pill"><span class="dot"></span> 8 de Março</div>
+      <h1>Feliz Dia das Mulheres</h1>
+      <p>Para uma mulher incrível ✨</p>
+    </header>
+
+    <section class="scene">
+      <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Abrir carta">
+
+        <!-- Carta -->
+        <article class="letter" id="letter" aria-label="Carta">
+          <div class="letter-head">
+            <h2>Para uma mulher incrível</h2>
+            <span class="date" id="date"></span>
+          </div>
+
+          <div class="letter-body">
+            <p>
+              Hoje é um lembrete do quanto você é <strong>forte</strong>, <strong>única</strong> e <strong>essencial</strong>.
+              Você inspira com o seu jeito e com a coragem de seguir em frente, mesmo quando ninguém vê.
+            </p>
+
+            <p>
+              Que você se olhe com mais carinho. Que a vida te devolva em dobro tudo aquilo que você oferece:
+              amor, presença, esforço e verdade.
+            </p>
+
+            <p class="quote">
+              “Você é prova viva de que delicadeza e força podem morar no mesmo coração.”
+            </p>
+
+            <p>
+              Que você nunca duvide do seu valor. O mundo é melhor porque você existe.
+            </p>
+
+            <p class="sig">
+              Com admiração,<br/>
+              <span>— Guilherme H 💗</span>
+            </p>
+          </div>
+
+          <div class="actions">
+            <button class="btn alt" id="love">Espalhar carinho 💖</button>
+            <button class="btn" id="close">Fechar</button>
+          </div>
+        </article>
+
+        <!-- Envelope (camadas) -->
+        <div class="env-back"></div>
+        <div class="env-front"></div>
+        <div class="env-flap" id="flap"></div>
+
+        <!-- Selo -->
+        <button class="seal" id="open" aria-label="Abrir">ABRIR</button>
+      </div>
+
+      <p class="hint">Clique em <b>ABRIR</b>. Depois clique em <b>Espalhar carinho</b> 💖</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

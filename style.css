@@ -1,0 +1,313 @@
+:root{
+  --bg1:#140a2a;
+  --bg2:#3b0f4e;
+  --env1:#1c0f28;
+  --env2:#2a1436;
+  --paper:#fff7fb;
+  --ink:#24131f;
+  --pink:#ff4fb8;
+  --violet:#7b5cff;
+  --gold:#ffd27a;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color:#fff;
+  background: radial-gradient(900px 700px at 20% 15%, rgba(123,92,255,.28), transparent 60%),
+              radial-gradient(900px 700px at 85% 25%, rgba(255,79,184,.24), transparent 55%),
+              linear-gradient(160deg, var(--bg1), var(--bg2));
+  overflow:hidden;
+}
+
+.bg{
+  position:fixed; inset:-200px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,79,184,.18), transparent 55%),
+              radial-gradient(circle at 70% 40%, rgba(123,92,255,.18), transparent 55%);
+  filter: blur(40px);
+  pointer-events:none;
+  animation: drift 10s ease-in-out infinite alternate;
+  opacity:.9;
+}
+@keyframes drift{
+  from{ transform: translate(-15px,-10px) scale(1.02); }
+  to{ transform: translate(18px,14px) scale(1.06); }
+}
+
+#fx{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+
+.container{
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:28px 14px 60px;
+}
+
+.header{ text-align:center; margin-bottom:16px; }
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(10px);
+  font-weight:800;
+  margin-bottom:10px;
+}
+.dot{
+  width:10px; height:10px; border-radius:50%;
+  background: linear-gradient(120deg, var(--pink), var(--gold));
+  box-shadow: 0 0 18px rgba(255,79,184,.55);
+}
+.header h1{
+  margin:8px 0 6px;
+  font-size: clamp(28px, 4vw, 44px);
+  text-shadow: 0 16px 40px rgba(0,0,0,.35);
+}
+.header p{ margin:0; opacity:.9; }
+
+.scene{ width:min(620px, 95vw); display:flex; flex-direction:column; align-items:center; gap:12px; }
+.hint{ margin:0; opacity:.85; font-size:13px; text-align:center; }
+
+/* ===== Envelope ===== */
+.envelope{
+  width:min(560px, 95vw);
+  height:340px;
+  position:relative;
+  perspective: 1400px;
+  outline:none;
+}
+
+/* fundo */
+.env-back{
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+  background: linear-gradient(145deg, var(--env2), var(--env1));
+  box-shadow: 0 40px 90px rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.12);
+  z-index:1;
+}
+
+/* frente (só a parte de baixo, pra não “cortar” o papel) */
+.env-front{
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+  background: linear-gradient(145deg, var(--env2), var(--env1));
+  border:1px solid rgba(255,255,255,.12);
+  z-index:6;
+
+  /* frente apenas embaixo + dobra */
+  clip-path: polygon(
+    0 48%,
+    50% 72%,
+    100% 48%,
+    100% 100%,
+    0 100%
+  );
+}
+
+/* aba (flap) */
+.env-flap{
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+  background: linear-gradient(145deg, #3b1b45, #1f0f28);
+  border:1px solid rgba(255,255,255,.14);
+  clip-path: polygon(0 0, 100% 0, 50% 66%);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 800ms cubic-bezier(.2,.9,.2,1);
+  backface-visibility: hidden;
+  z-index:7; /* fechado: por cima */
+}
+
+/* selo */
+.seal{
+  position:absolute;
+  left:50%;
+  top:63%;
+  transform: translate(-50%,-50%);
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  border:none;
+  cursor:pointer;
+  z-index:9;
+  color:#fff;
+  font-weight:900;
+  letter-spacing:.6px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 55%),
+    linear-gradient(140deg, var(--pink), var(--violet));
+  box-shadow: 0 20px 55px rgba(255,79,184,.35), 0 0 0 1px rgba(255,255,255,.22) inset;
+  transition: transform .2s ease, filter .2s ease, opacity .2s ease;
+}
+.seal:hover{ transform: translate(-50%,-50%) scale(1.03); filter:brightness(1.05); }
+.seal:active{ transform: translate(-50%,-50%) scale(.98); }
+
+/* ===== Carta ===== */
+.letter{
+  position:absolute;
+  left:50%;
+  bottom:18px;
+
+  width:88%;
+  max-width:520px;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius:18px;
+  box-shadow: 0 40px 120px rgba(0,0,0,.45);
+  border:1px solid rgba(0,0,0,.08);
+  overflow:hidden;
+
+  /* fechado: escondida “dentro” */
+  transform: translateX(-50%) translateY(190px);
+  opacity:0;
+  pointer-events:none;
+
+  /* IMPORTANTE: a carta fica acima do envelope quando aberta */
+  z-index:8;
+
+  transition:
+    transform 1050ms cubic-bezier(.2,.9,.2,1),
+    opacity 240ms ease;
+}
+
+.letter-head{
+  padding:18px 18px 10px;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255,79,184,.18), transparent 55%),
+    radial-gradient(circle at 100% 40%, rgba(123,92,255,.14), transparent 55%);
+  border-bottom:1px solid rgba(0,0,0,.08);
+}
+.letter-head h2{ margin:0 0 6px; font-size:20px; }
+.date{ font-size:13px; opacity:.72; font-weight:800; }
+
+.letter-body{ padding: 14px 18px 16px; line-height:1.65; font-size:15px; }
+.letter-body p{ margin:10px 0; }
+
+.quote{
+  margin:14px 0;
+  padding:12px;
+  border-left:4px solid rgba(255,79,184,.55);
+  background: rgba(255,79,184,.10);
+  border-radius:12px;
+  font-style:italic;
+}
+
+.sig{ margin-top:14px; font-weight:800; }
+.sig span{
+  font-weight:950;
+  background: linear-gradient(90deg, var(--pink), var(--violet));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  padding: 12px 14px 16px;
+  border-top:1px solid rgba(0,0,0,.08);
+  background: rgba(0,0,0,.02);
+}
+.btn{
+  flex:1;
+  padding:10px 12px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:900;
+  color:#fff;
+  background: linear-gradient(135deg, var(--pink), var(--violet));
+  box-shadow: 0 14px 30px rgba(255,79,184,.20);
+  transition: transform .16s ease, filter .16s ease;
+}
+.btn:hover{ transform: translateY(-1px); filter:brightness(1.03); }
+.btn:active{ transform: translateY(1px); }
+.btn.alt{
+  background: linear-gradient(135deg, #ff7fc7, var(--gold));
+  color:#2a1b25;
+}
+
+/* ===== Estados ===== */
+.envelope.open .env-flap{
+  transform: rotateX(-170deg);
+}
+
+/* carta aparece só quando abre */
+.envelope.open .letter{
+  transform: translateX(-50%) translateY(-36px);
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* selo some um pouco */
+.envelope.open .seal{
+  opacity:.22;
+  pointer-events:none;
+}
+
+/* AQUI É A CORREÇÃO PRINCIPAL:
+   depois que abriu, a aba vai pra trás (não corta a carta). */
+.envelope.opened .env-flap{
+  z-index:2;
+}
+
+/* fechamento: primeiro esconde carta */
+.envelope.closing .letter{
+  transform: translateX(-50%) translateY(190px);
+  opacity:0;
+  pointer-events:none;
+}
+
+/* ===== Efeitos ===== */
+.fx{
+  position:absolute;
+  top:-30px;
+  left:0;
+  opacity:.95;
+  will-change: transform, opacity;
+  transform: translate3d(var(--x), -30px, 0) rotate(var(--r));
+  animation: fall var(--t) linear forwards;
+}
+@keyframes fall{
+  to{
+    transform: translate3d(var(--x2), 110vh, 0) rotate(calc(var(--r) + 180deg));
+    opacity:0;
+  }
+}
+.fx.heart{
+  width:14px; height:14px;
+  background: rgba(255,79,184,.95);
+  border-radius:3px;
+  transform: translate3d(var(--x), 110%, 0) rotate(45deg);
+  animation: floatUp var(--t) ease-out forwards;
+}
+.fx.heart::before,
+.fx.heart::after{
+  content:"";
+  position:absolute;
+  width:14px;height:14px;
+  border-radius:50%;
+  background: rgba(255,79,184,.95);
+}
+.fx.heart::before{ left:-7px; top:0; }
+.fx.heart::after{ top:-7px; left:0; }
+@keyframes floatUp{
+  from{ opacity:0; }
+  15%{ opacity:1; }
+  to{
+    transform: translate3d(var(--x2), -30vh, 0) rotate(45deg);
+    opacity:0;
+  }
+}
